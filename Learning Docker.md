@@ -143,3 +143,37 @@ Search for an image:
 
 
 
+## Dockerfiles
+
+- small program to create an image
+- run with
+  - `docker build -t *name_of_result* .`
+- the parts that change the most belong at the of the Dockerfile
+- they are NOT shell scripts
+  - processes you start on one line will not be running on the next line
+  - each line is a call to `docker run`
+- Environment variables *will* be set on the next line
+
+*RUN* will run a command during building, and *CMD* will run when accessing the container (if no specific command was provided eg. bash).
+
+Example of Dockerfile:
+`FROM ubuntu:14.04 `
+`RUN echo "building simple docker image."`
+`CMD echo "hello container."`
+
+`docker build -t *name_of_new_image* .`
+
+`docker run [--rm] *new_image*`
+
+Other examples:
+`FROM debian:sid`
+`RUN apt-get -y update`
+`RUN apt-get install nano -y`
+`CMD ["/bin/bash", "/tmp/notes"]`
+
+`docker build -t example/notes .`
+
+Chain other images:
+`FROM example/notes`
+`ADD notes.txt /notes.txt`
+`CMD "nano" "/notes.txt"`
