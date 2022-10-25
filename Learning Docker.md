@@ -58,3 +58,34 @@ CPU limits: `docker run --cpu-shares` relative to other containers
 
  
 
+## Networking
+
+Name for referring for internal containers (instead of using IP): **host.docker.internal**
+
+eg:
+
+`docker --rm -ti --add-host=host.docker.internal:host-gateway *image* bash`
+
+`nc host.docker.internal *port_number*`
+
+Add listening ports: `docker run [--rm] [-ti] -p *number_port*:*number_port* image bash`
+
+Check listening ports for specific container:
+
+`docker port *container_name*`
+
+Specify protocol:
+
+`docker run -p 1234:1234/udp`
+
+Create virtual network:
+
+`docker network create *network_name*`
+
+Connect new container:
+
+`docker run [--rm] [-ti] --net *network_name*`
+
+Connect running container to virtual network:
+
+`docker network connect *network_name* *container_name*`
