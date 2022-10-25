@@ -50,5 +50,11 @@ Remove all containers: `docker rm $(docker ps -aq)`
 
 Memory limits : `docker run --memory maximum-allowed-memory image-name command`
 
+CPU limits: `docker run --cpu-shares` relative to other containers
+
+​					`docker run --cpu-quota` to limit in general
+
+*Orchestration generally requires resource limiting.*
+
  
 
