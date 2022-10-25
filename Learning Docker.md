@@ -2,9 +2,11 @@
 
 Hey there, if you're reading this then you're most likely interested in checking my notes on how I'm learning to use Docker. 
 
-Pull an image: `docker *image*`
+Pull an image: `docker pull *image*`
 
 List all available images: `docker images`
+
+Delete image: `docker rmi *image_nameOrId*`
 
 
 
@@ -44,7 +46,13 @@ Get all containers IDs: `docker ps -aq`
 
 Remove all containers: `docker rm $(docker ps -aq)`
 
+Add environment variable:
 
+`docker run [--rm] [-ti] -e VARIABLE=string`
+
+Add a tag when creating image out of container (instead of "LATEST"):
+
+`docker commit *container_id* *new_image_name*:*tag_version*`
 
 ## Resource Constraints
 
@@ -89,3 +97,49 @@ Connect new container:
 Connect running container to virtual network:
 
 `docker network connect *network_name* *container_name*`
+
+
+
+## Volumes
+
+These are virtual "discs" to store and share data between containers
+
+- Persistent - data will remain even if container gets removed
+- Ephemeral - exist as long as a container is using it
+
+
+
+create shared volume: 
+
+`mkdir example`
+
+`docker run [-ti] -v /home/user/example:/shared-folder`
+
+connect new container to another container's volume:
+
+`docker run [-ti] -v /example` <-- not shared with host (WILL BE DELETED AFTER ALL CONTAINERS ARE GONE)
+
+`docker run [-ti] --volumes-from *container_with_volume*`
+
+
+
+## Docker Registries
+
+- Registries manage and distribute images
+- docker (the company) offers these for free
+- you can run your own, for safety and privacy
+
+
+
+Search for an image:
+
+`docker search *name*`
+
+
+
+`docker login`
+
+`docker push *username*/*image_name*:*image_tag*`
+
+
+
