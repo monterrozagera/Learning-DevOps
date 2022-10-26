@@ -177,3 +177,43 @@ Chain other images:
 `FROM example/notes`
 `ADD notes.txt /notes.txt`
 `CMD "nano" "/notes.txt"`
+
+### Dockerfile syntax
+
+ - **FROM** - must be the first command in the file, which image to download and start from
+ - **MAINTAINER** - defines the author of this Dockerfile 
+    `MAINTAINER Firstname Lastname <email@example.com>`
+ - **RUN** - runs the command line, waits for it to finish and saves the result
+    `RUN unzip install.zip /opt/install/`
+    `RUN echo hello docker`
+ - **ADD** 
+    adds local files
+    `ADD run.sh /run.sh`
+    add contents of tar archives
+    `ADD project.tar.gz /install/`
+    works with URLs as well
+    `ADD https://project.example.com/download/1.0/project.rpm /project/`
+ - **ENV** - sets environment variables, both during build and when running the result
+    `ENV DB_HOST=db.production.example.com`
+    `ENV DB_PORT=5432`
+ - **ENTRYPOINT** - specifies the start of the command to run (USE IF YOU WANT CONTAINER TO ACT LIKE A COMMAND-LINE PROGRAM)
+ - **CMD** - specifies the whole command to run
+ - **Shell form vs Exec form**
+    shell form:
+    `nano notes.txt`
+    exec form:
+    `["/bin/nano", "notes.txt"]`
+ - **EXPOSE** - maps a port into the container
+    `EXPOSE 8080`
+ - **VOLUME** - defines shared or ephemeral volumes - avoid defining shared folders in Dockerfiles
+    shared
+    `VOLUME ["/shared-data"]`
+    ephemeral
+    `VOLUME ["/host/path/", "/container/path/"]`
+ - **WORKDIR** - sets the directory the container starts in
+    `WORKDIR /install/`
+ - **USER** - sets which user the container will run as
+    `USER arthur`
+    `USER 1000`
+
+Check more: https://docs.docker.com/engine/reference/builder/
