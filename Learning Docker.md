@@ -65,6 +65,14 @@ Add a tag when creating image out of container (instead of "LATEST"):
 
 `docker commit *container_id* *new_image_name*:*tag_version*`
 
+Save images to archive:
+
+`docker save -o my-images.tar.gz *image1* *image2:latest* *image3:14.04*1`
+
+Load images from archive:
+
+`docker load -i my-iamges.at.gz`
+
 ## Resource Constraints
 
 Memory limits : `docker run --memory maximum-allowed-memory image-name command`
@@ -262,3 +270,64 @@ ENTRYPOINT echo google is this big; cat google-size
 
 This will generally reduce the size of the container
 
+## Docker control socket
+
+ - docker is two programs: client and server
+ - the server receives commands over a socket (either over a network or a "file")
+
+`/var/run/docker.sock`
+
+Starts client within a docker container:
+`docker run -ti --rm -v /var/run/docker.sock:/var/run/docker.sock docker sh`
+
+### Bridging
+
+ - Docker uses bridges to create virtual networks
+ - these are software switches
+ - control ethernet layer
+
+turn off protection (for debugging):
+
+`docker run --net=host options *image-name* *command*`
+
+### Routing
+
+- creates "firewall" rules to move packets between networks
+- NAT
+- change the source address on the way out
+- change the destination address on the way back in
+- "exposing" a port is really just "port forwarding"
+
+`sudo iptables -n -L -t nat` or iptables-legacy
+
+`docker run -ti --rm --net=host --privileged=true` <-- gives full control to the container
+
+### Namespaces
+
+- they allow processes to be attached to private network segments
+- these private networks are bridged into a shared network with the rest of the containers
+- containers have virtual network "cards"
+- containers get their own copy of the networking stack
+
+## Processes and CGroups
+
+Find name of the root process of a specific container:
+
+`docker inspect --format '{{.State.Pid}}' *container_name*`
+
+## COWs (Copy-On-Write)
+
+- Read from the original
+- Copy when you write (with layers)
+- contents of layers are moved between containers in gzip files
+- containers are independent of the storage engine
+- any container can be loaded anywhere
+- it is possible to run out of layers on some of the storage engines
+
+### Volumes and bind mounting
+
+- linux VFS (Virtual File System)
+- mounting devices on the VFS
+- mounting directories on the VFS
+
+`mount -o bind *directory*`
