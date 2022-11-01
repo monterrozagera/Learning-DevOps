@@ -48,7 +48,7 @@ Playbook example:
 
 ### Ad-hoc commands:
 
-`ansible myservers -m ping`
+`ansible all -m ping`
 
 ## Hosts and Variables
 
@@ -71,6 +71,20 @@ northeast
 ```
 
 Creates a group named `east` and includes `southeast & northeast` in order to refer to them easily.
+
+### Simulate servers for testing with local loopback addresses
+
+```yaml
+[logicservers]
+server1		ansible_host=127.0.0.1		ansible_connection=local	deprecation_warnings=false
+server2		ansible_host=127.0.0.2		ansible_connection=local	INTERPRETER_PYTHON=auto_silent
+server3		ansible_host=127.0.0.3		ansible_connection=local
+server4		ansible_host=127.0.0.4		ansible_connection=local
+```
+
+
+
+
 
 ## Modules
 
@@ -136,5 +150,91 @@ localhost | SUCCESS => {
 }
 ```
 
+## Remote Management
+
+Ansible uses SSH to remotely control servers. In the server, copy the contents of `id_rsa.pub`, and append it to the `authorized_keys` file.
+
+## Orchestration vs Automation
+
+- Automation refers to a single task
+- Orchestration refers to the management of many automated tasks
+- Often a complicated ordering with dependencies
+
+## Configuration Management
+
+- Agentless
+- SSH
+- State Driven
+- Idempotent  
+
+```yaml
+---
+ - hosts: all
+   become: yes
+   name: "NTP Configuration"
+   
+   tasks:
+   			- name: "Ensure NTP is installed"
+   			  apt:
+   			   name:
+   			    - ntp
+   			   state: present
+   			   
+   			- name: "Ensure NTP is started now and at boot"
+   			  service:
+   			   name: ntp
+   			   state: started
+   			   enabled: yes
+ 
+```
 
 
+
+## React to change with Ansible
+
+- Scripts can be easily modified
+- Structures like **handlers** exist for flexibility
+
+```yaml
+---
+  - name: "Reac with Change example"
+    hosts: webservers
+    serial: 1
+    
+    tasks:
+    
+    - name: "Install nginx"
+      debug:
+        msg: "Install nginx on: {{ inventory_hostname }}"
+        
+    - name: "Upgrade nginx"
+      debug:
+        msg: "Upgrade nginx on: {{ inventory_hostname }}"
+        
+    - name: "Configure nginx"
+      debug:
+      	msg: "Start {{ inventory_hostname }}"
+      notify: restart nginx
+      changed_when: True
+      
+    - name: "Verify nginx"
+      debug:
+        msg: "Verify: {{ inventory_hostname }}"
+        
+    handlers:
+     - name: restart nginx
+       debug:
+       	 msg: "CALLED HANDLER FOR RESTART" 
+      	
+```
+
+
+
+If no change is made, the handler wont activate. `changed_when` will trigger a change. The `notify` variable will trigger the handler named `restart nginx` 
+
+## Infrastructure Management
+
+- Build Infrastructure from the ground up
+- Manage physical Inf
+- Automate virtualization
+- Wide OS support
