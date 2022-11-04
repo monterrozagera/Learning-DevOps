@@ -114,6 +114,24 @@ class foo {
 	}
 }
 ```
+
+### Parameters (vars instead of hardcoded values)
+
+```
+class minecraft {
+  $url = 'https://launcher.mojang.com/mc/game/1.12.2/server/886945bfb2b978778c3a0288fd7fab09d315b25f/server.jar'
+  $install_dir = '/opt/minecraft'
+  file {$install_dir:
+    ensure => directory,
+  }
+  file {"${install_dir}/server.jar":
+    ensure => file,
+    source      => $url,
+    before => Service['minecraft'],
+  }
+```
+
+
 ## Forge
 
 `forge.puppet.com`
@@ -144,3 +162,67 @@ Show list of pending certificates: `puppetserver ca list`
 Sign specific CA: `puppetserver ca sign --certname example.puppet.example`
 
 **Sign all pending certificates from master**: `puppetserver ca sign --all`
+
+## Orchestration
+
+* MCollective
+* Ansible or SSH in a for loop
+* Puppet Bolt
+
+## Facter
+
+Used by Puppet to collect facts about nodes, and figure out what needs to be done on them.
+
+`facter [key]`
+
+Use variables in site.pp
+
+`facter fqdn` => master.puppet.vm
+
+```
+node 'master.puppet.vm' {
+  include role::master_server
+  file { '/root/README':
+    ensure => file,
+    content => "Welcome to ${fqdn}",
+ }
+}
+```
+
+## Modules
+
+A set of directories that follow a certain pattern. Puppet knows where to find files within a module because of that pattern.
+
+### Manifests
+
+* Puppet code for your module
+* One class per manifest
+* The class named after the module is in init.pp
+* eg: the **nginx** class in the **nginx** module is in manifest/init.pp
+
+**/files**: Static files
+**/templates**: Dynamic templates
+**/lib**: Additional code
+**/task**: Extemporary tasks
+**metadata.json**: fills in the details of the module
+
+## Templates
+
+Files must be extension `.epp`
+
+EPP tag: `<%= $variable %>`
+
+```
+[Unit]                                                        
+Description=Minecraft Server                                  
+                                                              
+Wants=network.target                                          
+After=network.target                                          
+                                                              
+[Service]                                                     
+WorkingDirectory=<%= $install_dir %>                               
+ExecStart=/usr/bin/java -Xmx512M -Xms32M -jar server.jar nogui
+                                                              
+[Install]                                                     
+WantedBy=multi-user.target
+```
