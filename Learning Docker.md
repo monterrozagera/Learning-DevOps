@@ -176,26 +176,32 @@ Search for an image:
 *RUN* will run a command during building, and *CMD* will run when accessing the container (if no specific command was provided eg. bash).
 
 Example of Dockerfile:
-`FROM ubuntu:14.04 `
-`RUN echo "building simple docker image."`
-`CMD echo "hello container."`
+
+```
+FROM ubuntu:14.04
+RUN echo "building simple docker image."
+CMD echo "hello container."
+```
 
 `docker build -t *name_of_new_image* .`
 
 `docker run [--rm] *new_image*`
 
 Other examples:
-`FROM debian:sid`
-`RUN apt-get -y update`
-`RUN apt-get install nano -y`
-`CMD ["/bin/bash", "/tmp/notes"]`
+```
+FROM debian:sid
+RUN apt-get -y update
+RUN apt-get install nano -y
+CMD ["/bin/bash", "/tmp/notes"]
 
 `docker build -t example/notes .`
 
 Chain other images:
-`FROM example/notes`
-`ADD notes.txt /notes.txt`
-`CMD "nano" "/notes.txt"`
+```
+FROM example/notes
+ADD notes.txt /notes.txt
+CMD "nano" "/notes.txt"
+```
 
 ### Dockerfile syntax
 
