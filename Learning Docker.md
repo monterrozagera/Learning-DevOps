@@ -193,10 +193,12 @@ FROM debian:sid
 RUN apt-get -y update
 RUN apt-get install nano -y
 CMD ["/bin/bash", "/tmp/notes"]
+```
 
 `docker build -t example/notes .`
 
 Chain other images:
+
 ```
 FROM example/notes
 ADD notes.txt /notes.txt
