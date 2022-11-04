@@ -264,7 +264,8 @@ Check more: https://docs.docker.com/engine/reference/builder/
 
 **COPY** - used for multi-project. copies from previously stated `FROM` in Dockerfile
 
-```FROM ubuntu:16.04 as builder
+```
+FROM ubuntu:16.04 as builder
 RUN apt-get update
 RUN apt-get -y install curl
 RUN curl https://google.com | wc -c > google-size
