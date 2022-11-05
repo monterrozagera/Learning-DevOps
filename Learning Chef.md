@@ -1,7 +1,7 @@
 
 Check before: 
 
-[Configuration Management (CM)](Configuration%20Management.md)
+[Configuration Management (CM)](Configuration%20Management.html)
 
 # Learning Chef
 
