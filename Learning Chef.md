@@ -49,4 +49,13 @@ Chef platform manages any server component:
 * Libraries
 * CMD
 
+## chef-client
 
+* Agent that runs locally on every node under management by Chef
+* it will perform all of the steps required to bring the node into the expected state
+
+`sudo chef-client [--local-mode or -z] hello.rb`
+
+## Recipes
+
+There just .rb Ruby files
